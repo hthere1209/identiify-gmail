@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Gmail Auto Sender</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <header class="header">
+      <img src="icons/icon48.png" alt="" width="28" height="28" />
+      <div class="header-text">
+        <h1>Gmail Auto Sender</h1>
+        <p id="connection" class="connection">Checking Gmail…</p>
+      </div>
+      <span id="statusPill" class="pill" data-status="idle">Idle</span>
+    </header>
+
+    <section class="summary" aria-label="Progress">
+      <div class="stats">
+        <div class="stat"><strong id="statSent">0</strong><span>Sent</span></div>
+        <div class="stat"><strong id="statRemaining">0</strong><span>Remaining</span></div>
+        <div class="stat"><strong id="statFailed">0</strong><span>Failed</span></div>
+        <div class="stat"><strong id="statToday">0</strong><span>Today</span></div>
+      </div>
+      <div class="bar" role="progressbar" aria-label="Sent" aria-valuemin="0" aria-valuemax="100">
+        <div id="barFill" class="bar-fill"></div>
+      </div>
+      <p id="schedule" class="schedule">Not started</p>
+    </section>
+
+    <nav class="tabs" role="tablist">
+      <button class="tab" role="tab" aria-selected="true" data-tab="campaign">Campaign</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="activity">
+        Activity <span id="errorBadge" class="badge" hidden></span>
+      </button>
+    </nav>
+
+    <main>
+      <section id="tab-campaign" class="panel" role="tabpanel">
+        <fieldset id="campaignFields">
+          <label class="field">
+            <span class="label-row">
+              <span>Recipients</span>
+              <span id="recipientStats" class="hint"></span>
+            </span>
+            <textarea
+              id="recipientsText"
+              rows="5"
+              spellcheck="false"
+              placeholder="One per line&#10;jane@example.com&#10;John Smith <john@example.com>"
+            ></textarea>
+          </label>
+
+          <label class="field">
+            <span>Subject</span>
+            <input id="subject" type="text" placeholder="Quick question, {{first_name|there}}" />
+          </label>
+
+          <label class="field">
+            <span>Message</span>
+            <textarea id="body" rows="7" placeholder="Hi {{first_name|there}},&#10;&#10;…"></textarea>
+            <span class="hint">Placeholders: <code>{{name}}</code> <code>{{first_name}}</code> <code>{{email}}</code>. Add a fallback like <code>{{first_name|there}}</code>.</span>
+          </label>
+
+          <div class="grid">
+            <label class="field">
+              <span>Every (min)</span>
+              <input id="intervalMinutes" type="number" min="1" max="1440" />
+            </label>
+            <label class="field">
+              <span>Emails per run</span>
+              <input id="perCycle" type="number" min="1" max="20" />
+            </label>
+            <label class="field">
+              <span>Daily limit</span>
+              <input id="dailyLimit" type="number" min="1" max="2000" />
+            </label>
+          </div>
+
+          <label class="check">
+            <input id="bringToFront" type="checkbox" />
+            <span>Switch to the Gmail tab while sending, then switch back (more reliable)</span>
+          </label>
+        </fieldset>
+        <p id="lockedNote" class="hint" hidden>Pause to edit the campaign.</p>
+      </section>
+
+      <section id="tab-activity" class="panel" role="tabpanel" hidden>
+        <div class="log-head">
+          <span class="hint">Newest first</span>
+          <button id="clearLog" class="link" type="button">Clear</button>
+        </div>
+        <ol id="log" class="log"></ol>
+        <p id="logEmpty" class="empty">No activity yet.</p>
+      </section>
+    </main>
+
+    <p id="formError" class="error" role="alert" hidden></p>
+
+    <footer class="footer">
+      <button id="resetBtn" class="btn secondary" type="button">Reset progress</button>
+      <button id="toggleBtn" class="btn primary" type="button">Start</button>
+    </footer>
+
+    <script type="module" src="popup.js"></script>
+  </body>
+</html>
