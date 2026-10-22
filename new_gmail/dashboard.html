@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Gmail HTML Auto Sender</title>
+    <link rel="icon" href="icons/icon32.png" />
+    <link rel="stylesheet" href="dashboard.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <img src="icons/icon48.png" alt="" width="32" height="32" />
+      <div class="topbar-text">
+        <h1>Gmail HTML Auto Sender</h1>
+        <p id="connection" class="connection">Checking Gmail…</p>
+      </div>
+      <span id="statusPill" class="pill" data-status="idle">Idle</span>
+    </header>
+
+    <div class="layout">
+      <div class="col-main">
+        <fieldset id="campaignFields" class="stack">
+          <section class="card">
+            <div class="card-head">
+              <h2>Recipients</h2>
+              <span id="recipientStats" class="hint"></span>
+            </div>
+            <textarea
+              id="recipientsText"
+              rows="8"
+              spellcheck="false"
+              aria-label="Recipients"
+              placeholder="One per line&#10;jane@example.com&#10;John Smith <john@example.com>&#10;bob@example.com, Bob Lee"
+            ></textarea>
+          </section>
+
+          <section class="card">
+            <div class="card-head"><h2>Message</h2></div>
+
+            <label class="field">
+              <span>Subject</span>
+              <input id="subject" type="text" placeholder="News for you, {{first_name|there}}" />
+            </label>
+
+            <div class="field">
+              <span>HTML file</span>
+              <div id="dropzone" class="dropzone">
+                <div id="templateEmpty">
+                  <p><strong>Drop an .html file here</strong> or</p>
+                  <button id="chooseFile" class="btn secondary" type="button">Choose file…</button>
+                </div>
+                <div id="templateLoaded" class="template-row" hidden>
+                  <div class="template-meta">
+                    <strong id="templateName"></strong>
+                    <span id="templateInfo" class="hint"></span>
+                  </div>
+                  <button id="replaceFile" class="btn secondary" type="button">Replace…</button>
+                  <button id="removeFile" class="btn ghost" type="button">Remove</button>
+                </div>
+              </div>
+              <input id="fileInput" type="file" accept=".html,.htm,text/html" hidden />
+              <ul id="templateWarnings" class="warnings"></ul>
+            </div>
+
+            <div class="field">
+              <span>Insert HTML using</span>
+              <div class="choices">
+                <label class="choice">
+                  <input type="radio" name="insertMethod" value="injector" />
+                  <span>
+                    <strong>Mail HTML Injector</strong>
+                    <span class="hint">Clicks "Edit Html message", pastes into HTML code, clicks "Insert at cursor".</span>
+                  </span>
+                </label>
+                <label class="choice">
+                  <input type="radio" name="insertMethod" value="direct" />
+                  <span>
+                    <strong>Built-in</strong>
+                    <span class="hint">Inserts the HTML directly. Doesn't need the injector extension.</span>
+                  </span>
+                </label>
+              </div>
+            </div>
+
+            <p class="hint">
+              Placeholders work in the subject and the HTML: <code>{{name}}</code> <code>{{first_name}}</code>
+              <code>{{email}}</code>, with a fallback like <code>{{first_name|there}}</code>.
+            </p>
+          </section>
+
+          <section class="card">
+            <div class="card-head"><h2>Schedule</h2></div>
+            <div class="grid3">
+              <label class="field">
+                <span>Every (minutes)</span>
+                <input id="intervalMinutes" type="number" min="1" max="1440" />
+              </label>
+              <label class="field">
+                <span>Emails per run</span>
+                <input id="perCycle" type="number" min="1" max="20" />
+              </label>
+              <label class="field">
+                <span>Daily limit</span>
+                <input id="dailyLimit" type="number" min="1" max="2000" />
+              </label>
+            </div>
+            <label class="check">
+              <input id="bringToFront" type="checkbox" />
+              <span>Switch to the Gmail tab while sending, then switch back (more reliable)</span>
+            </label>
+          </section>
+        </fieldset>
+
+        <section class="card">
+          <div class="card-head">
+            <h2>Preview</h2>
+            <span id="previewFor" class="hint"></span>
+          </div>
+          <iframe id="preview" class="preview" sandbox="" title="Email preview"></iframe>
+          <p id="previewEmpty" class="empty">Load an HTML file to see a preview.</p>
+        </section>
+      </div>
+
+      <aside class="col-side">
+        <section class="card">
+          <div class="stats">
+            <div class="stat"><strong id="statSent">0</strong><span>Sent</span></div>
+            <div class="stat"><strong id="statRemaining">0</strong><span>Remaining</span></div>
+            <div class="stat"><strong id="statFailed">0</strong><span>Failed</span></div>
+            <div class="stat"><strong id="statToday">0</strong><span>Today</span></div>
+          </div>
+          <div class="bar" role="progressbar" aria-label="Processed" aria-valuemin="0" aria-valuemax="100">
+            <div id="barFill" class="bar-fill"></div>
+          </div>
+          <p id="schedule" class="schedule">Not started</p>
+          <p id="formError" class="error" role="alert" hidden></p>
+          <div class="actions">
+            <button id="toggleBtn" class="btn primary" type="button">Start</button>
+            <button id="resetBtn" class="btn secondary" type="button">Reset progress</button>
+          </div>
+          <p id="lockedNote" class="hint center" hidden>Pause to edit the campaign.</p>
+        </section>
+
+        <section class="card log-card">
+          <div class="card-head">
+            <h2>Activity</h2>
+            <button id="clearLog" class="link" type="button">Clear</button>
+          </div>
+          <ol id="log" class="log"></ol>
+          <p id="logEmpty" class="empty">No activity yet.</p>
+        </section>
+      </aside>
+    </div>
+
+    <script type="module" src="dashboard.js"></script>
+  </body>
+</html>

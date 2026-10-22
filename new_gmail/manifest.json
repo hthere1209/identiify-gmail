@@ -1,0 +1,35 @@
+{
+  "manifest_version": 3,
+  "name": "Gmail HTML Auto Sender",
+  "short_name": "HTML Sender",
+  "version": "1.0.1",
+  "description": "Send an HTML email template to a list of recipients from your signed-in Gmail, on a fixed schedule, using Mail HTML Injector.",
+  "minimum_chrome_version": "116",
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "action": {
+    "default_title": "Gmail HTML Auto Sender",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png"
+    }
+  },
+  "options_page": "dashboard.html",
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://mail.google.com/mail/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "permissions": ["storage", "unlimitedStorage", "alarms", "scripting"],
+  "host_permissions": ["https://mail.google.com/*"]
+}
